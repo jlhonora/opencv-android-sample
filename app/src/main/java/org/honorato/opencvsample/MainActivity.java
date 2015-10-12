@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
+
+        // Load ndk built module, as specified
+        // in moduleName in build.gradle
+        System.loadLibrary("native");
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_main);
@@ -57,8 +62,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void onPause()
     {
         super.onPause();
-        if (mOpenCvCameraView != null)
-            mOpenCvCameraView.disableView();
+        disableCamera();
     }
 
     @Override
@@ -76,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     public void onDestroy() {
         super.onDestroy();
+        disableCamera();
+    }
+
+    public void disableCamera() {
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
@@ -86,7 +94,16 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void onCameraViewStopped() {
     }
 
+    Mat mRgba;
+    Mat mGray;
+
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        return inputFrame.gray();
+        mRgba = inputFrame.rgba();
+        mGray = inputFrame.gray();
+        FindFeatures(mGray.getNativeObjAddr(), mRgba.getNativeObjAddr());
+        return mRgba;
     }
+
+    @SuppressWarnings("JniMissingFunction")
+    public native void FindFeatures(long matAddrGr, long matAddrRgba);
 }

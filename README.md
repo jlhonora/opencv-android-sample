@@ -13,3 +13,11 @@ Based on [this](http://stackoverflow.com/questions/27406303/opencv-in-android-st
 5. For Android Studio v1.2.2, to access to Module Settings : in the project view, right-click the dependent module -> Open Module Settings
 6. Copy libs folder under sdk/native to Android Studio under app/src/main.
 7. In Android Studio, rename the copied libs directory to jniLibs and we are done.
+
+## Setup NDK
+
+Download and install Android's Native Development Kit (NDK). More info here: https://developer.android.com/ndk/guides/setup.html
+
+## Notes
+
+This project uses the gradle experimental plugin, so it is subject to change.

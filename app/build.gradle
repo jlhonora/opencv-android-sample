@@ -1,27 +1,57 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.1"
 
-    defaultConfig {
-        applicationId "org.honorato.opencvsample"
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        defaultConfig.with {
+            applicationId = "org.honorato.opencvsample"
+            minSdkVersion.apiLevel = 15
+            targetSdkVersion.apiLevel = 23
+            versionCode = 1
+            versionName = "1.0"
+        }
     }
-    buildTypes {
+
+    android.buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // minifyEnabled = false
+            // proguardFiles = getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    def openCVAndroidSdkDir = "/Users/jlh/dev/androidstudio/OpenCV-android-sdk/sdk/native"
+    android.ndk {
+        moduleName = "native"
+        cppFlags += "-I${file(openCVAndroidSdkDir + "/jni/include")}".toString()
+        cppFlags += "-frtti"
+        cppFlags += "-fexceptions"
+        ldLibs += ["log", "opencv_java3"]
+        stl    = "gnustl_static"
+    }
+
+    android.productFlavors {
+        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+        // https://developer.android.com/ndk/guides/abis.html#sa
+        create("arm") {
+            ndk.abiFilters += "armeabi"
+            ndk.ldFlags += "-L${file('src/main/jniLibs/armeabi')}".toString()
+        }
+        create("arm7") {
+            ndk.abiFilters += "armeabi-v7a"
+            ndk.ldFlags += "-L${file('src/main/jniLibs/armeabi-v7a')}".toString()
+        }
+        create("arm8") {
+            ndk.abiFilters += "arm64-v8a"
+            ndk.ldFlags += "-L${file('src/main/jniLibs/arm64-v8a')}".toString()
         }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile project(':openCVLibrary300')
 }
