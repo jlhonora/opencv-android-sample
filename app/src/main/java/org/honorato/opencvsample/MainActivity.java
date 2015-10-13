@@ -98,12 +98,26 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     Mat mGray;
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+        // return performFindFeatures(inputFrame);
+        return performIncreaseContrast(inputFrame);
+    }
+
+    protected Mat performFindFeatures(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
         FindFeatures(mGray.getNativeObjAddr(), mRgba.getNativeObjAddr());
         return mRgba;
     }
 
+    protected Mat performIncreaseContrast(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+        mRgba = inputFrame.rgba();
+        IncreaseContrast(mRgba.getNativeObjAddr());
+        return mRgba;
+    }
+
     @SuppressWarnings("JniMissingFunction")
     public native void FindFeatures(long matAddrGr, long matAddrRgba);
+
+    @SuppressWarnings("JniMissingFunction")
+    public native void IncreaseContrast(long matAddrRgba);
 }

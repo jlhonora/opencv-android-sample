@@ -21,4 +21,20 @@ JNIEXPORT void JNICALL Java_org_honorato_opencvsample_MainActivity_FindFeatures(
     }
 }
 
+JNIEXPORT void JNICALL Java_org_honorato_opencvsample_MainActivity_IncreaseContrast(JNIEnv*, jobject, jlong addrRgba) {
+    Mat& src = *(Mat*)addrRgba;
+    Mat dst;
+
+    // Convert to gray
+    cvtColor(src, src, CV_BGR2GRAY);
+
+    // Histogram equalization
+    equalizeHist(src, dst);
+
+    // Saturation by 10%
+    float alpha = 1.1f;
+    float beta = 12.75f;
+    dst.convertTo(dst, -1, alpha, beta);
+}
+
 }
