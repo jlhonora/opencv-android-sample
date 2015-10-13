@@ -115,9 +115,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         return mRgba;
     }
 
-    @SuppressWarnings("JniMissingFunction")
     public native void FindFeatures(long matAddrGr, long matAddrRgba);
 
-    @SuppressWarnings("JniMissingFunction")
     public native void IncreaseContrast(long matAddrRgba);
 }
