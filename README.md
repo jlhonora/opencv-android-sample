@@ -21,3 +21,11 @@ Download and install Android's Native Development Kit (NDK). More info here: htt
 ## Notes
 
 This project uses the gradle experimental plugin, so it is subject to change.
+
+Your `local.properties` file must define the ndk and opencv dirs. Here's mine as an example
+
+```
+sdk.dir=~/Library/Android/sdk
+ndk.dir=/usr/local/android-ndk-r10e
+opencv.dir=~/dev/androidstudio/OpenCV-android-sdk/sdk/native/jni/include
+```
