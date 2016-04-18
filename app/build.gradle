@@ -3,7 +3,7 @@ apply plugin: 'com.android.model.application'
 model {
     android {
         compileSdkVersion = 23
-        buildToolsVersion = "23.0.1"
+        buildToolsVersion = "23.0.2"
 
         defaultConfig.with {
             applicationId = "org.honorato.opencvsample"
@@ -11,6 +11,15 @@ model {
             targetSdkVersion.apiLevel = 23
             versionCode = 1
             versionName = "1.0"
+        }
+
+        ndk {
+            moduleName = "native"
+            cppFlags.add("-I${file(getOpenCVDir())}".toString())
+            cppFlags.add("-frtti")
+            cppFlags.add("-fexceptions")
+            ldLibs.addAll(["log", "opencv_java3"])
+            stl    = "gnustl_static"
         }
     }
 
@@ -21,37 +30,37 @@ model {
         }
     }
 
-
-    def openCVAndroidSdkDir = "/Users/jlh/dev/androidstudio/OpenCV-android-sdk/sdk/native"
-    android.ndk {
-        moduleName = "native"
-        cppFlags += "-I${file(openCVAndroidSdkDir + "/jni/include")}".toString()
-        cppFlags += "-frtti"
-        cppFlags += "-fexceptions"
-        ldLibs += ["log", "opencv_java3"]
-        stl    = "gnustl_static"
-    }
-
     android.productFlavors {
         // for detailed abiFilter descriptions, refer to "Supported ABIs" @
         // https://developer.android.com/ndk/guides/abis.html#sa
         create("arm") {
-            ndk.abiFilters += "armeabi"
-            ndk.ldFlags += "-L${file('src/main/jniLibs/armeabi')}".toString()
+            ndk.abiFilters.add("armeabi")
+            ndk.ldFlags.add("-L${file('src/main/jniLibs/armeabi')}".toString())
         }
         create("arm7") {
-            ndk.abiFilters += "armeabi-v7a"
-            ndk.ldFlags += "-L${file('src/main/jniLibs/armeabi-v7a')}".toString()
+            ndk.abiFilters.add("armeabi-v7a")
+            ndk.ldFlags.add("-L${file('src/main/jniLibs/armeabi-v7a')}".toString())
         }
         create("arm8") {
-            ndk.abiFilters += "arm64-v8a"
-            ndk.ldFlags += "-L${file('src/main/jniLibs/arm64-v8a')}".toString()
+            ndk.abiFilters.add("arm64-v8a")
+            ndk.ldFlags.add("-L${file('src/main/jniLibs/arm64-v8a')}".toString())
         }
     }
 }
 
+def getOpenCVDir() {
+    Properties properties = new Properties()
+    properties.load(new File(rootDir.absolutePath + "/local.properties").newDataInputStream())
+    def externalModuleDir = properties.getProperty('opencv.dir', null)
+    if (externalModuleDir == null) {
+        throw new GradleException(
+                "OpenCV location not found. Define location with opencv.dir in the local.properties file!")
+    }
+    return externalModuleDir
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
     compile project(':openCVLibrary300')
 }
